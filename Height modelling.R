@@ -1,6 +1,6 @@
-#######################################################################################
-# Modelisation de la taille chez les garcons de 0 - 18 ans en population nes apres 1990
-#######################################################################################
+############################################################
+# Modelisation de la taille chez les garcons de 0 - 18 ans #
+############################################################
 
 # Creation d un age directement mis a la puissance lambda (estimation of 0.65 in a subsample)
 Taille_G_0_18_pop$age_jour2 <- Taille_G_0_18_pop$age_jour^0.65
@@ -186,13 +186,6 @@ remove(Mod_M3_Taille_G_1990_18)
 remove(Mod_M3_Taille_G_1990_20)
 
 
-
-####################################################################
-# Supression de etape 4 puisqu on recherche les 3 dfs dans etape 6 #
-####################################################################
-
-
-
 # Modele 5 : fixation des df/inter de mu et sigma et variation df/inter de tau
 ##############################################################################
 M5_Taille_G_1990_function <- function(inter)
@@ -318,8 +311,4 @@ M7_Taille_G_1990
 
 gamlss_final_AFPA_SFMG_Taille_G <- M7_Taille_G_1990
 rm(M7_Taille_G_1990)
-
-
-save.image("~/Sauvegarde_environnement/AFPA_SFMG_42/sauvegarde_environnement_AFPA_SFMG_42_Taille_G_acte_III.RData")
-
 
