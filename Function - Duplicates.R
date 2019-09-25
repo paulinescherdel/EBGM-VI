@@ -1,5 +1,5 @@
-  # Librairies des programmes
-  ###########################
+  # Librairies
+  ############
   library(boot)
   library(pastecs)
   library(doBy)
