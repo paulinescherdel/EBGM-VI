@@ -1,15 +1,9 @@
-############################
-# CREATION DE Z-SCORES OMS #
-############################
-
 # Chemin de travail 
 ###################
 WD <-"D:/INSERM - PARIS/EBGM VI - construction courbes/"
 
-
-# Appel des bases de données
+# Appel des bases de donnÃ©es
 ###########################
-load(file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees.rda"))
 load(file=paste0(WD,"Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa.rda"))
 
 # Library
@@ -21,7 +15,6 @@ library(Rmisc)
 #################################
 # Construction des classes d'age 
 #################################
-
 # Jours
 #######
 afpa$c_age_jour <- ifelse (afpa$age_jour<0,"99", 
@@ -32,13 +25,6 @@ afpa$c_age_jour <- ifelse (afpa$age_jour<0,"99",
                                                                             labels = c ("01","02","03","04","05","06","07","08","09","10",
                                                                                         "11","12","13","14","15","16","17","18","19","20")))))
 
-drees$c_age_jour <- ifelse (drees$age_jour<0,"99", 
-                            ifelse (drees$age_jour==0, "00", as.character(cut(drees$age_jour,
-                                                                              breaks = c(0,365,730,1095,1460,1825,2190,2555,2920,3285,3650,
-                                                                                         4015,4380,4745,5110,5475,5840,6205,6570,6935,7300), 
-                                                                              include.lowest = FALSE, right=TRUE, 
-                                                                              labels = c ("01","02","03","04","05","06","07","08","09","10",
-                                                                                          "11","12","13","14","15","16","17","18","19","20")))))
 # Mois
 ######
 afpa$c_age_mois <- ifelse (afpa$age_jour<0,"99", 
@@ -58,22 +44,6 @@ afpa$c_age_mois <- ifelse (afpa$age_jour<0,"99",
                                                                                        "61","62","63","64","65","66","67","68","69","70","71","72",
                                                                                        "73","74","75","76","77","78","79","80")))))
 
-drees$c_age_mois <- ifelse (drees$age_jour<0,"99", 
-                            ifelse (drees$age_jour==0,"00", as.character (cut(drees$age_mois,
-                                                                              breaks = c(0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,
-                                                                                         57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,
-                                                                                         108,111,114,117,120,123,126,129,132,135,138,141,144,
-                                                                                         147,150,153,156,159,162,165,168,171,174,177,180,183,
-                                                                                         186,189,192,195,198,201,204,207,210,213,216,219,222,
-                                                                                         225,228,231,234,237,240),
-                                                                              include.lowest = FALSE, right=TRUE, 
-                                                                              labels = c("01","02","03","04","05","06","07","08","09","10","11","12",
-                                                                                         "13","14","15","16","17","18","19","20","21","22","23","24",
-                                                                                         "25","26","27","28","29","30","31","32","33","34","35","36",
-                                                                                         "37","38","39","40","41","42","43","44","45","46","47","48",
-                                                                                         "49","50","51","52","53","54","55","56","57","58","59","60",
-                                                                                         "61","62","63","64","65","66","67","68","69","70","71","72",
-                                                                                         "73","74","75","76","77","78","79","80")))))
 # Annees
 ########
 afpa$c_age_annee <- ifelse (afpa$age_jour<0,"99", 
@@ -83,25 +53,14 @@ afpa$c_age_annee <- ifelse (afpa$age_jour<0,"99",
                                                                              labels = c("01","02","03","04","05","06","07","08","09","10","11",
                                                                                         "12","13","14","15","16","17","18","19","20")))))
 
-drees$c_age_annee <- ifelse (drees$age_jour<0,"99", 
-                             ifelse (drees$age_jour==0,"00", as.character (cut(drees$age_annee,
-                                                                               breaks= c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20), 
-                                                                               include.lowest = FALSE, right=TRUE,
-                                                                               labels = c("01","02","03","04","05","06","07","08","09","10","11",
-                                                                                          "12","13","14","15","16","17","18","19","20")))))
-
-
-
-
 
 
 #####################################
-# Application critères de sélection #
+# Application critÃ¨res de sÃ©lection #
 #####################################
 
 #### AFPA
-
-# Suppression des enfants nés avec un petit poids de naissance
+# Suppression des enfants nÃ©s avec un petit poids de naissance
 # ------------------------------------------------------------
 afpa_pdn  <- subset(afpa, (poids<2.5 & age_jour==0)) #4 278    
 afpa_pdn  <- as.data.frame(afpa_pdn[ ,c("pedid")])
@@ -113,46 +72,18 @@ afpa_pdn_1$indic <- replace(afpa_pdn_1$indic,is.na(afpa_pdn_1$indic), 0) # 1 543
 afpa_pdn_2       <- subset(afpa_pdn_1, indic==0)                         # 1 483 830 
 afpa_pdn_2       <- subset(afpa_pdn_2, select=-c(indic))
 
-# Suppression des enfants nés avec une date de naissance > 1990
+# Suppression des enfants nÃ©s avec une date de naissance > 1990
 # -------------------------------------------------------------
 afpa_pdn_ddn  <- subset(afpa_pdn_2, ADN >= 1990) 
 
 rm(afpa_pdn, afpa_pdn_1, afpa_pdn_2)
 
 
-
-#### DREES
-
-# Suppression des enfants nés avec un petit poids de naissance
-# ------------------------------------------------------------
-drees_pdn   <- subset(drees, (poids<2.5 & age_jour==0)) # 2 079    
-drees_pdn   <- as.data.frame(drees_pdn[ ,c("ID")])
-names(drees_pdn)[1] <- "ID"
-drees_pdn$indic     <- 1
-drees_pdn_1 <- merge(drees, drees_pdn, by.x="ID", by.y="ID", all=TRUE)
-
-drees_pdn_1$indic <- replace(drees_pdn_1$indic,is.na(drees_pdn_1$indic), 0) 
-drees_pdn_2       <- subset(drees_pdn_1, indic==0) # 72 331 
-drees_pdn_2       <- subset(drees_pdn_2,select=-c(indic))
-
-# Suppression des enfants nés avec une date de naissance > 1990
-# -------------------------------------------------------------
-drees_pdn_ddn  <- subset(drees_pdn_2, ADN >= 1990) 
-rm(drees_pdn, drees_pdn_1, drees_pdn_2)
-
-
-
-
-###############################################
-# Programme de nettoyage par les z-scores OMS #
-###############################################
-
-# Sous groupes d'age pour les z-scores
-######################################
-
+######################
+# Macro z-scores OMS #
+######################
 # AFPA 
 #######
-
 afpa_05<- subset(afpa_pdn_ddn,
                  afpa_pdn_ddn$age_jour >= 0 & afpa_pdn_ddn$age_jour <= 1856 & 
                   ((afpa_pdn_ddn$poids >= 0 | is.na(afpa_pdn_ddn$poids)) & 
@@ -167,30 +98,8 @@ afpa_519<- subset(afpa_pdn_ddn,
 
 
 
-
-# DREES
-#######
-drees_05 <- subset(drees_pdn_ddn,
-                   drees_pdn_ddn$age_jour >= 0 & drees_pdn_ddn$age_jour <= 1856 & 
-                   ((drees_pdn_ddn$poids >= 0 | is.na(drees_pdn_ddn$poids)) & 
-                     (drees_pdn_ddn$taille >= 0 | is.na(drees_pdn_ddn$taille))))
-
-drees_519 <- subset(drees_pdn_ddn,
-                    drees_pdn_ddn$age_jour > 1856 & drees_pdn_ddn$age_jour <= 6935 & 
-                    ((drees_pdn_ddn$poids >= 0 | is.na(drees_pdn_ddn$poids)) & 
-                      (drees_pdn_ddn$taille >= 0 | is.na(drees_pdn_ddn$taille))))
-
-
-
-
-
-
-#######################
-# Macro des z-score OMS
-#######################
-
-# 0-5 ans (en jour)
-# -----------------
+# Macro z-score OMS 0-5 ans (en jour)
+# ------------------------------------
 weianthro<-read.table(paste0(WD,"References OMS/Z_score_oms05/weianthro.txt"),header=T,sep="",skip=0)
 lenanthro<-read.table(paste0(WD,"References OMS/Z_score_oms05/lenanthro.txt"),header=T,sep="",skip=0)
 bmianthro<-read.table(paste0(WD,"References OMS/Z_score_oms05/bmianthro.txt"),header=T,sep="",skip=0)
@@ -229,24 +138,9 @@ afpa_z01 <- z_score05(etude="AFPA/AFPA_32/",
                       taille=taille, 
                       pc=pc)
 
-## DREES
-drees_05$pc <- NA
-drees_z05 <- z_score05(etude="DREES/",
-                       FileLab="drees05",
-                       mydf=drees_05,
-                       sexe=sexe,
-                       age_jour=age_jour,
-                       poids=poids,
-                       taille=taille,
-                       pc=pc)
 
-
-
-
-
-
-# 5-19 ans (en mois) 
-# -----------------
+# Macro z-score 5-19 ans (en mois) 
+# --------------------------------
 wfawho2007<-read.table(paste0(WD,"References OMS/Z_score_oms519/wfawho2007.txt"),header=T,sep="",skip=0)
 hfawho2007<-read.table(paste0(WD,"References OMS/Z_score_oms519/hfawho2007.txt"),header=T,sep="",skip=0)
 bfawho2007<-read.table(paste0(WD,"References OMS/Z_score_oms519/bfawho2007.txt"),header=T,sep="",skip=0)
@@ -275,22 +169,10 @@ afpa_z519 <- z_score519(etude="AFPA/AFPA_32/",
                         poids=poids,
                         taille=taille)
 
-## DREES
-drees_519$pc<-NA
-drees_z519 <- z_score519(etude="DREES/",
-                         FileLab="drees519",
-                         mydf=drees_519,
-                         sexe=sexe,
-                         age_mois=age_mois,
-                         poids=poids,
-                         taille=taille)
-
-
 
 
 # Ajouter une variable dans la table de 5-19
 ############################################
-
 ## AFPA 
 afpa_z05 <- afpa_z05[ ,c("pedid","ped","id","sexe","ADN","age_jour","poids","taille","pc","age_g","age_mois","age_annee","c_age_jour","c_age_mois","c_age_annee","cbmi","zlen","zwei","zwfl","zbmi","zhc")]
 colnames(afpa_z05)[16:21] <- c("IMC","z_t_oms","z_p_oms","z_pt_oms","z_b_oms","z_pc_oms")
@@ -300,26 +182,10 @@ afpa_z519$z_pc_oms<- NA
 afpa_z519 <- afpa_z519[ ,c("pedid","ped","id","sexe","ADN","age_jour","poids","taille","pc","age_g","age_mois","age_annee","c_age_jour","c_age_mois","c_age_annee","cbmi","zhfa","zwfa","zbfa","z_pt_oms","z_pc_oms")]
 colnames(afpa_z519)[16:19] <- c("IMC","z_t_oms","z_p_oms","z_b_oms")
 
-
-## DREES
-drees_z05 <- drees_z05[,c("sexe","ID","ENQ","DDN","ADN","age_g","t", "age_mois","age_jour","age_annee", "c_age_jour", "c_age_mois", "c_age_annee","poids","taille","pc","IMC","zlen","zwei","zwfl","zbmi")]
-colnames(drees_z05)[18:21] <- c( "z_t_oms","z_p_oms","z_pt_oms","z_b_oms")
-drees_z05$z_pc_oms<- NA
-drees_z519$z_pt_oms<- NA
-
-drees_z519 <- drees_z519[,c("sexe","ID","ENQ","DDN","ADN","age_g","t","age_mois","age_jour","age_annee","c_age_jour", "c_age_mois", "c_age_annee","poids","taille","pc","IMC","zhfa","zwfa","zbfa","z_pt_oms")]
-colnames(drees_z519)[18:20] <- c( "z_t_oms","z_p_oms","z_b_oms")
-drees_z519$z_pc_oms<- NA
-
-
 # Sauvegarde des bases
 ######################
 save(afpa_z05, file=paste0(WD,"Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z05.rda"))
 save(afpa_z519, file=paste0(WD,"Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z519.rda"))
-
-save(drees_z05, file=paste0(WD,"Donnees/DREES/Bases sauvegardees/drees_z05.rda"))
-save(drees_z519, file=paste0(WD,"Donnees/DREES/Bases sauvegardees/drees_z519.rda"))
-
 
 # Fusionner les deux bases de donnees 
 #####################################
@@ -329,13 +195,11 @@ fusion <- function(table05, table519)
   return(r)
 }
 afpa_z019  <- fusion(afpa_z05, afpa_z519)
-drees_z019 <- fusion(drees_z05, drees_z519)
 
 
 # Sauvegarde des bases
 ######################
 save(afpa_z019, file=paste0(WD,"/Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z019.rda"))
-save(drees_z019, file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees_z019.rda"))
 
 
   
@@ -343,7 +207,7 @@ save(drees_z019, file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees_z019.rd
 # NETTOYAGE : Z-SCORE #
 #######################
 
-# Créer indicatrice pour les z-scores compris entre -4 et 4 puis -5 et 5
+# CrÃ©er indicatrice pour les z-scores compris entre -4 et 4 puis -5 et 5
 ###########################################################################
 indic_z_score <- function(table)
 {
@@ -361,19 +225,15 @@ indic_z_score <- function(table)
   table$z_p_oms_z5<-as.factor(ifelse(is.na(table$z_p_oms)==T   | table$z_p_oms > -5 & table$z_p_oms < 5, 0, 1))
   table$z_pc_oms_z5<-as.factor(ifelse(is.na(table$z_pc_oms)==T | table$z_pc_oms > -5 & table$z_pc_oms < 5, 0, 1))
   table$z_b_oms_z5<-as.factor(ifelse(is.na(table$z_b_oms)==T   | table$z_b_oms > -5 & table$z_b_oms < 5, 0, 1))
-  
-  
-  return(table)
+   
+return(table)
 }
 afpa_z019  <- indic_z_score(afpa_z019)
-drees_z019 <- indic_z_score(drees_z019)
-
 
 
 # Sauvegarde des bases
 ######################
 save(afpa_z019, file=paste0(WD,"/Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z019.rda"))
-save(drees_z019, file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees_z019.rda"))
 
 
 
@@ -384,11 +244,11 @@ save(drees_z019, file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees_z019.rd
 # NETTOYAGE : DOUBLONS #
 ########################
 
-# Comptabiliser le nombre maximal de doublons à corriger (Macro applicable pour max 3 doublons)
+# Comptabiliser le nombre maximal de doublons Ã  corriger (Macro applicable pour max 3 doublons)
 ########################################################
 nb_doublon<- function (entree, mesure, indz, ident){
 
-  # Préparation de la table
+  # PrÃ©paration de la table
   tab_d <- subset(entree, eval(parse(text=indz))==0)
   tab_d <- tab_d[!duplicated(tab_d[c(ident,"age_jour", mesure)]),]
   tab_d <- tab_d[order(tab_d[[ident]], tab_d$age_jour, noquote(tab_d[[mesure]])),]  
@@ -396,7 +256,7 @@ nb_doublon<- function (entree, mesure, indz, ident){
   as.character(tab_d[[ident]])
   setkeyv(tab_d, ident)
   
-  # Identification des dates identiques répétées : lag + lead de 1 : pour creer un indicateur = 1 quand l'age est egal au precedent 0 sinon
+  # Identification des dates identiques rÃ©pÃ©tÃ©es : lag + lead de 1 : pour creer un indicateur = 1 quand l'age est egal au precedent 0 sinon
   tab_d[, age_p1  := shift(age_jour, n=1, fill=NA, type="lag"),  by=ident] 
   tab_d[, age_p_1 := shift(age_jour, n=1, fill=NA, type="lead"), by=ident] 
   
@@ -428,45 +288,19 @@ nb_doublon(afpa_z019, "poids",  "z_p_oms_z4", "pedid") # 3
 nb_doublon(afpa_z019, "taille", "z_t_oms_z4", "pedid") # 3
 nb_doublon(afpa_z019, "pc",     "z_pc_oms_z4","pedid")# 2
 
-## DREES
-nb_doublon(drees_z019, "poids",  "z_p_oms_z5", "ID") # 0
-nb_doublon(drees_z019, "taille", "z_t_oms_z5", "ID") # 0
 
-nb_doublon(drees_z019, "poids",  "z_p_oms_z4", "ID") # 0
-nb_doublon(drees_z019, "taille", "z_t_oms_z4", "ID") # 0
-
-
-
-# Supression ponctuel de doublons
-#################################
-afpa_z019 <- subset(afpa_z019, !(afpa_z019$pedid == 1502914 & afpa_z019$age_jour == 428) & !(afpa_z019$pedid == 1501635 & afpa_z019$age_jour == 582) & !(afpa_z019$pedid == 1601681 & afpa_z019$age_jour == 1833 & afpa_z019$z_b_oms== -0.19))
-                    
-
-# Supression automatique de doublons
-#####################################
-source(paste0(WD,"Programme/AFPA/AFPA_32/Nettoyage doublon simplifie.r"))
-
-
-drees_z019$doublon_t_z4<- as.factor(0)
-drees_z019$doublon_p_z4<- as.factor(0)
-drees_z019$doublon_pc_z4<- as.factor(0)
-drees_z019$doublon_t_z5<- as.factor(0)
-drees_z019$doublon_p_z5<- as.factor(0)
-drees_z019$doublon_pc_z5<- as.factor(0)
-
+# Supression des doublons via la fonction duplicates
+####################################################
+source(paste0(WD,"Programme/AFPA/AFPA_32/Duplicates.r"))
 
 # Sauvegarde des bases
 ######################
 save(afpa_z019,  file=paste0(WD,"/Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z019.rda"))
-save(drees_z019, file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees_z019.rda"))
 
 
-##################################################################################################
-# NETTOYAGE : VARIATIONS DE Z-SCORES PAR INTERVALLE DE TEMPS 
-##################################################################################################
-drees_z019$pedid <- drees_z019$ID
-drees_z019$ped   <- 99
-
+##############################################################
+# NETTOYAGE : VARIATIONS DE Z-SCORES PAR INTERVALLE DE TEMPS #
+##############################################################
 variation_z_score <-function(table,ind_var_z_t_z4, ind_var_z_p_z4, ind_var_z_b_z4 , ind_var_z_pc_z4, ind_var_z_t_z5, ind_var_z_p_z5, ind_var_z_b_z5 , ind_var_z_pc_z5 )
 {
   variation_z <- function(table,ident,mesure,age,z,ind_z,ind_doub,variation_z,ind_var_z,seuil1, seuil2)
@@ -482,14 +316,14 @@ variation_z_score <-function(table,ind_var_z_t_z4, ind_var_z_p_z4, ind_var_z_b_z
     table_v[,noquote(paste0(z,"_l")):=shift(eval(parse(text=z)), n=1, fill=NA, type="lag"), by=ident]   # z-scores
     table_v[,noquote(variation_z):=eval(parse(text=z))-eval(parse(text=paste0(z,"_l")))]  # variations z-score
     
-    # Création d'une indicatrice des variations de z-scores selon un seuil pré-défini
+    # CrÃ©ation d'une indicatrice des variations de z-scores selon un seuil prÃ©-dÃ©fini
     table_v[[paste0(ind_var_z,"_s")]]<-as.factor(ifelse(table_v[[variation_z]] < seuil1,"-1",ifelse(table_v[[variation_z]] > seuil2,"1","0")))
     
-    # Création d'une indicatrice multiplicative des variations de z-scores
+    # CrÃ©ation d'une indicatrice multiplicative des variations de z-scores
     table_v[,noquote(paste0(ind_var_z,"_s_l")):= shift(eval(parse(text=paste0(ind_var_z,"_s"))), n=1, fill=NA, type="lag"), by=ident] # indicatrice variations
     table_v[,noquote(paste0(ind_var_z,"_m")):= as.factor(as.numeric(as.character(eval(parse(text=paste0(ind_var_z,"_s")))))*as.numeric(as.character(eval(parse(text=paste0(ind_var_z,"_s_l"))))))]
     
-    # Création d'une indicatrice mi-finale des variations de z-scores
+    # CrÃ©ation d'une indicatrice mi-finale des variations de z-scores
     table_v[,noquote(paste0(ind_var_z,"_m_l")):= shift(eval(parse(text=paste0(ind_var_z,"_m"))), n=1, fill=NA, type="lead"), by=ident] # indicatrice multiplicative variations
     table_v[[paste0(ind_var_z,"_m_f")]] <- as.factor(ifelse(is.na(table_v[[paste0(ind_var_z,"_m_l")]])==T,0,ifelse(table_v[[paste0(ind_var_z,"_m_l")]]==-1,1,0)))
     table_v <- data.frame(table_v)
@@ -555,27 +389,16 @@ variation_z_score <-function(table,ind_var_z_t_z4, ind_var_z_p_z4, ind_var_z_b_z
                     "var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5", "var_z_b_oms_z5", "var_z_pc_oms_z5")]
   return(table)
 }
-# ATTENTION : 1er macro AFPA et DREES il faut que les "#" soient mis en place aux lignes indiquées dans la macro mais pour les 2nd et 3eme ligne d'appel de la macro a lancer il faut les enlever
+# ATTENTION : 1er macro AFPA et DREES il faut que les "#" soient mis en place aux lignes indiquÃ©es dans la macro mais pour les 2nd et 3eme ligne d'appel de la macro a lancer il faut les enlever
 
 ## AFPA 
 afpa_z019  <- variation_z_score(afpa_z019,"var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5","var_z_b_oms_z5","var_z_pc_oms_z5")
 afpa_z019  <- variation_z_score(afpa_z019,"var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5","var_z_b_oms_z5","var_z_pc_oms_z5") # Retirer les # du programme
-afpa_z019  <- variation_z_score(afpa_z019,"var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5","var_z_b_oms_z5","var_z_pc_oms_z5") # Pas de variations importantes retrouvées
-
-
-## DREES
-drees_z019 <- variation_z_score(drees_z019,"var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5","var_z_b_oms_z5","var_z_pc_oms_z5")
-drees_z019 <- variation_z_score(drees_z019,"var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5","var_z_b_oms_z5","var_z_pc_oms_z5") # Retirer les # du programme
-drees_z019 <- variation_z_score(drees_z019,"var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5","var_z_b_oms_z5","var_z_pc_oms_z5") # Pas de variations importantes retrouvées
-
-drees_z019<- subset(drees_z019, select=-c(ped))
-names(drees_z019)[1] <-"ID" 
-
+afpa_z019  <- variation_z_score(afpa_z019,"var_z_t_oms_z4","var_z_p_oms_z4","var_z_b_oms_z4","var_z_pc_oms_z4","var_z_t_oms_z5","var_z_p_oms_z5","var_z_b_oms_z5","var_z_pc_oms_z5") # Pas de variations importantes retrouvÃ©es
 
 # Sauvegarde des bases
 ######################
 save(afpa_z019, file=paste0(WD,"/Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z019.rda"))
-save(drees_z019, file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees_z019.rda"))
 
 
 
@@ -583,7 +406,6 @@ save(drees_z019, file=paste0(WD,"/Donnees/DREES/Bases sauvegardees/drees_z019.rd
 ######################################################
 # Selection des enfants avec un grand nombre de mesure
 ######################################################
-
 # creation classe 
 # ---------------
 afpa_z019[["classe"]] <- ifelse(afpa_z019[["age_mois"]] >=0   & afpa_z019[["age_mois"]] < 6 , "0-6",
@@ -626,7 +448,7 @@ tab_cpt_PC_z5 <- nb_mesure_age(afpa_z019, "pc",     "z_pc_oms_z5", "var_z_pc_oms
 
 
 
-# Application des seuils pré-établis pour la taille, le poids et le PC (interquatile * 3 = programme descriptif_mesure.R)
+# Application des seuils prÃ©-Ã©tablis pour la taille, le poids et le PC (interquatile * 3 = programme descriptif_mesure.R)
 # -----------------------------------------------------------------------------------------------------------------------
 
 tab_cpt_T_z4$largefreq_T_z4 <- ifelse((tab_cpt_T_z4$classe=="6-12"  & tab_cpt_T_z4$x>6)   |
@@ -774,10 +596,10 @@ save(afpa_z019, file=paste0(WD,"/Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z0
 
 
 #############################################################
-# Selection des mesures dans les deux premières annees de vie
+# Selection des mesures dans les deux premiÃ¨res annees de vie
 #############################################################
 
-# tirage aléatoire
+# tirage alÃ©atoire
 # ----------------
 supp_mesure <- function(table, mesure, z, var_z, doublon,largefreq_t,largefreq_p, largefreq_pc,  echant_0_6, echant_6_12, echant_12_24, echant_p24)
 {
@@ -820,7 +642,7 @@ afpa_P_z5$mesp_z5   <- 0
 afpa_PC_z5$mespc_z5 <- 0
 
 
-# Indice de selection d'enfants dans les deux premieres année de vie
+# Indice de selection d'enfants dans les deux premieres annÃ©e de vie
 # ------------------------------------------------------------------
 
 afpa_z019 <- merge(x=afpa_z019, y=afpa_T_z4[,c(1:8,9,49)],    by= c("pedid","age_jour","age_mois","age_annee","c_age_jour","c_age_mois","c_age_annee","sexe","taille"),  all.x=T)
@@ -846,9 +668,6 @@ afpa_z019 <- subset(afpa_z019,select=-c(mest_z4, mesp_z4, mespc_z4, mest_z5, mes
 # Sauvegarde des bases
 ######################
 save(afpa_z019, file=paste0(WD,"/Donnees/AFPA/AFPA_32/Bases sauvegardees/afpa_z019.rda"))
-
-
-
 
 # Supprimer des tables inutiles
 ###############################
