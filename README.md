@@ -2,4 +2,4 @@ This code repository is associated with the publication "A big-data approach to 
 
 The code allow:
 - to apply a data-cleaning process to growth data based on extreme absolute z-score, duplicated, and extreme variation z-score (cleaning.r)
-- to model height growth charts using LMS method (height modelling.r)
+- to model height growth charts using the LMS method (height modelling.r)
